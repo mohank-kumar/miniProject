@@ -1,6 +1,7 @@
 const express = require("express");
 const dotEnv = require('dotenv');
 const morgan = require('morgan');
+const fileUpload = require('express-fileupload');
 const connectDB = require('./db');
 const routes = require("./routes/index");
 const app = express();
@@ -14,7 +15,10 @@ app.use(
       extended: true,
     })
   );
-  app.use(express.json());
+app.use(express.json());
+
+//express-fileupload
+app.use(fileUpload());
 
 // Request Logger
 if (process.env.NODE_ENV == "dev") {

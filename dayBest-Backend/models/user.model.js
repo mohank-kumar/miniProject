@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema(
     otpexpiriytime: {type: Date},
     confirmed: { type: Boolean, default: false },
     forgot_password_hash: {type: String},
-    image: {data: Buffer, required: true}
+    image: {type: String, required: true}
   },
   { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
 );

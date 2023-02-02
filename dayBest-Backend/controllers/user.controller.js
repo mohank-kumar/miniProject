@@ -4,6 +4,7 @@ const sendMail = require("../utils/mail.utils");
 const {customAlphabet}= require("nanoid");
 const { v4: uuidv4 } = require("uuid");
 const nanoid = customAlphabet('1234567890', 6);
+const path = require('path');
 
 const register = async(req, res) => {
     try{
@@ -310,6 +311,26 @@ const deleteUser = async(req, res) => {
     }
 }
 
+const profilePictureUpload = async (req, res) => {
+  try{
+    const file = req.files.files;
+    const filePath = `public/images/${req.user.id}.jpg`;
+    const uploadfile = await file.mv(filePath);
+    if(uploadfile){
+      const updateProfilePicture = await Userservice.editUser({_id:req.user.id}, {image: filePath} );
+      if(updateProfilePicture){
+      return res.status(200).send({message: "Profile picture updated successfully."});
+    }
+    }
+    return res.status(400).send({message: "Profile picture not updated."});
+  }catch(err){
+    console.log("error", err);
+    return res
+    .status(500)
+    .send({ message: "Failed to upload profile picture.", err: err });
+  }
+}
+
 
 
 
@@ -325,5 +346,5 @@ module.exports = {
     getSingleUser,
     updateUser,
     deleteUser,
-    uploadProfilePicture
+    profilePictureUpload
 }

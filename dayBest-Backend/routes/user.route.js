@@ -16,6 +16,7 @@ router.post("/changePassword", validationMiddleware(changePasswordSchema),verify
 router.get("/",verifyToken, Controller.getSingleUser);
 router.patch("/",verifyToken, validationMiddleware(updateUserSchema),Controller.updateUser);
 router.delete("/",verifyToken, Controller.deleteUser);
+router.patch("/profile_picture", verifyToken, Controller.profilePictureUpload);
 
 
 module.exports = router;

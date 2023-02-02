@@ -20,6 +20,4 @@ module.exports = {
     otpExpiryTime,
     generateOtp,
     forgotHtml,
-    readFile,
-    writeFile
 }
