@@ -8,7 +8,7 @@ const path = require('path');
 
 const register = async(req, res) => {
     try{
-    const findUser = await Userservice.getSingleUser({email:req.body.email, roles: req.body.roles});
+    const findUser = await Userservice.getSingleUser({email:req.body.email, role: req.body.role});
     if(findUser){
         return res.status(400).send({error: "User already exist"});
     }
@@ -65,11 +65,11 @@ const login = async(req, res) => {
           const token = await Userservice.generateToken({
             id: user._id,
             email: user.email,
-            roles: user.roles
+            role: user.role
           });
           let response = {
             token,
-            user: { role: user.roles },
+            user: { role: user.role },
           };
           return res
             .status(200)
@@ -85,7 +85,7 @@ const login = async(req, res) => {
 const confirmEmail = async (req, res) => {
     try {
       const user = await Userservice.getSingleUser({
-       email: req.body.email
+       email: req.body.email,role: req.body.role
     });
       if (!user) return res.status(404).send({ message: "User not found." });
       if (user.otp && user.otp === req.body.otp) {
@@ -112,7 +112,7 @@ const confirmEmail = async (req, res) => {
 
 const resendVerification = async(req, res) => {
     try{
-        const user = await Userservice.getSingleUser({email:req.body.email});
+        const user = await Userservice.getSingleUser({email:req.body.email,role:req.body.role});
         if (!user) return res.status(404).send({ message: "User not found." });
         if (user.confirmed)
           return res.status(400).send({ message: "Email already verified." });
@@ -133,7 +133,7 @@ const resendVerification = async(req, res) => {
             .send({ message: "Failed to send verification email." });
         const update = await Userservice.editUser(user._id, {
           otp: otp,
-          otp_expiry_time: expiry_time,
+          otpexpiriytime: expiry_time,
         });
         if (!update)
           return res.status(400).send({ message: "Failed to update otp." });
