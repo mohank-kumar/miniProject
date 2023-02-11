@@ -4,10 +4,11 @@ const sendMail = require("../utils/mail.utils");
 const {customAlphabet}= require("nanoid");
 const { v4: uuidv4 } = require("uuid");
 const nanoid = customAlphabet('1234567890', 6);
+const path = require('path');
 
 const register = async(req, res) => {
     try{
-    const findUser = await Userservice.getSingleUser({email:req.body.email, roles: req.body.roles});
+    const findUser = await Userservice.getSingleUser({email:req.body.email, role: req.body.role});
     if(findUser){
         return res.status(400).send({error: "User already exist"});
     }
@@ -64,11 +65,11 @@ const login = async(req, res) => {
           const token = await Userservice.generateToken({
             id: user._id,
             email: user.email,
-            roles: user.roles
+            role: user.role
           });
           let response = {
             token,
-            user: { role: user.roles },
+            user: { role: user.role },
           };
           return res
             .status(200)
@@ -84,7 +85,7 @@ const login = async(req, res) => {
 const confirmEmail = async (req, res) => {
     try {
       const user = await Userservice.getSingleUser({
-       email: req.body.email
+       email: req.body.email,role: req.body.role
     });
       if (!user) return res.status(404).send({ message: "User not found." });
       if (user.otp && user.otp === req.body.otp) {
@@ -111,7 +112,7 @@ const confirmEmail = async (req, res) => {
 
 const resendVerification = async(req, res) => {
     try{
-        const user = await Userservice.getSingleUser({email:req.body.email});
+        const user = await Userservice.getSingleUser({email:req.body.email,role:req.body.role});
         if (!user) return res.status(404).send({ message: "User not found." });
         if (user.confirmed)
           return res.status(400).send({ message: "Email already verified." });
@@ -132,7 +133,7 @@ const resendVerification = async(req, res) => {
             .send({ message: "Failed to send verification email." });
         const update = await Userservice.editUser(user._id, {
           otp: otp,
-          otp_expiry_time: expiry_time,
+          otpexpiriytime: expiry_time,
         });
         if (!update)
           return res.status(400).send({ message: "Failed to update otp." });
@@ -310,6 +311,26 @@ const deleteUser = async(req, res) => {
     }
 }
 
+const profilePictureUpload = async (req, res) => {
+  try{
+    const file = req.files.files;
+    const filePath = `public/images/${req.user.id}.jpg`;
+    const uploadfile = await file.mv(filePath);
+    if(uploadfile){
+      const updateProfilePicture = await Userservice.editUser({_id:req.user.id}, {image: filePath} );
+      if(updateProfilePicture){
+      return res.status(200).send({message: "Profile picture updated successfully."});
+    }
+    }
+    return res.status(400).send({message: "Profile picture not updated."});
+  }catch(err){
+    console.log("error", err);
+    return res
+    .status(500)
+    .send({ message: "Failed to upload profile picture.", err: err });
+  }
+}
+
 
 
 
@@ -325,5 +346,5 @@ module.exports = {
     getSingleUser,
     updateUser,
     deleteUser,
-    uploadProfilePicture
+    profilePictureUpload
 }

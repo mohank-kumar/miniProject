@@ -24,7 +24,7 @@ const registerSchema = joi.object().keys({
     phonenumber: joi.number().required().messages({
         "string.pattern.base": "Phone number must be valid"
     }),
-    roles: joi.string().required(),
+    role: joi.string().required(),
     gender: joi.string().required()
 })
 
@@ -34,6 +34,7 @@ const loginSchema = joi.object().keys({
   });
 const confirmSchema = joi.object().keys({
     email: joi.string().email().required(),
+    role: joi.string().required(),
     otp: joi.string()
       .regex(/^[0-9]{6}$/)
       .messages({ "string.pattern.base": `OTP must have 6 digits only.` })
@@ -42,6 +43,11 @@ const confirmSchema = joi.object().keys({
 
 const emailSchema = joi.object().keys({
     email: joi.string().email().required(),
+  });
+
+  const resendSchema = joi.object().keys({
+    email: joi.string().email().required(),
+    role: joi.string().required()
   });
   
 const verifyOtpSchema = joi.object().keys({
@@ -108,5 +114,6 @@ module.exports = {
     verifyOtpSchema,
     resetPasswordSchema,
     changePasswordSchema,
-    updateUserSchema
+    updateUserSchema,
+    resendSchema
 }

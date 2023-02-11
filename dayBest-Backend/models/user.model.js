@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
     dateofbirth: {type: String},
     phonenumber: {type: Number, required: true},
     image: {type: String},
-    roles: {type: String, enum: ['FARMER', 'USER', 'ADMIN']},
+    role: {type: String, enum: ['FARMER', 'USER', 'ADMIN', 'INSPECTOR']},
     gender: {type: String, enum: ['Female','Male', 'Transgender']},
     isActive: {type: Boolean, default: true},
     isDeleted: {type: Boolean, default: false},
@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema(
     otpexpiriytime: {type: Date},
     confirmed: { type: Boolean, default: false },
     forgot_password_hash: {type: String},
-    image: {data: Buffer, required: true}
+    image: {type: String}
   },
   { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
 );
