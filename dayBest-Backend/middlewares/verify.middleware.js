@@ -13,7 +13,7 @@ const verifyToken = async (req, res, next) => {
   
       let decoded = await jwt.verify(token, process.env.JWT_SECRET);
       if (decoded) {
-        const user = await Userservice.getSingleUser({_id: decoded.id});
+        const user = await Userservice.getSingleUser({_id: decoded.id, isDeleted: false});
         if (user) {
           req.user = decoded;
           return next();

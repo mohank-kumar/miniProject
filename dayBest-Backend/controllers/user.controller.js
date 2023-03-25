@@ -46,7 +46,8 @@ const register = async(req, res) => {
 const login = async(req, res) => {
     try{
         const user = await Userservice.getSingleUser({
-           email:req.body.email
+           email:req.body.email,
+           isDeleted: false
     });
           if (!user) {
             return res.status(404).send({ message: "User not found." });
@@ -265,7 +266,7 @@ const changePassword = async (req, res) => {
 
 const getSingleUser = async(req, res) => {
     try{
-        const findUser = await Userservice.getSingleUser({_id: req.user.id});
+        const findUser = await Userservice.getSingleUser({_id: req.user.id, isDeleted: false});
         if(!findUser){
             return res.status(404).send({message: "User not found"});
         }
